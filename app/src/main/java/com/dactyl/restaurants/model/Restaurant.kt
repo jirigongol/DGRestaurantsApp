@@ -22,53 +22,43 @@ data class RestaurantDTO(
 	@Json(name = "name")
 	val name: String,
 	@Json(name = "location")
-	val location: LocationDTO,
+	val location: Location,
 	@Json(name = "user_rating")
-	val userRating: UserRatingDTO,
+	val userRating: UserRating,
 	@Json(name = "cuisines")
 	val cuisines: String,
 	@Json(name = "photos")
-	val photos: List<PhotosXDTO>,
+	val photos: List<PhotosX>,
 
 	)
 
 data class Restaurant(
 	val name: String,
-	val location: LocationDTO,
-	val userRating: UserRatingDTO,
+	val location: Location,
+	val userRating: UserRating,
 	val cuisines: String,
-	val photos: List<PhotosXDTO>
+	val photos: List<PhotosX>
 )
 
-data class LocationDTO(
-	@Json(name = "address")
+data class Location(
 	val address: String,
-	@Json(name = "city")
 	val city: String,
-	@Json(name = "latitude")
 	val latitude: String,
-	@Json(name = "longitude")
-	val longitude: String,
+	val longitude: String
 )
 
-data class UserRatingDTO(
-	@Json(name = "aggregate_rating")
+data class UserRating(
 	val aggregate_rating: String,
-	@Json(name = "rating_color")
 	val rating_color: String,
-	@Json(name = "rating_text")
 	val rating_text: String,
-	@Json(name = "votes")
 	val votes: Int
 )
 
-data class PhotosXDTO(
-	@Json(name = "photo")
-	val photo: PhotoDTO
+data class PhotosX(
+	val photo: Photo
 )
 
-data class PhotoDTO(
-	@Json(name = "url")
+data class Photo(
 	val url: String
 )
 
