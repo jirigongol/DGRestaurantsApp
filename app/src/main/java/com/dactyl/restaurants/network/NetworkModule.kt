@@ -23,7 +23,7 @@ object ApiModule {
 
 	@Provides
 	@Singleton
-	fun provideResataurantApi(retrofit: Retrofit): RestaurantApi = retrofit.create()
+	fun provideRestaurantApi(retrofit: Retrofit): RestaurantApi = retrofit.create()
 
 }
 
@@ -32,7 +32,7 @@ object ApiModule {
 object NetworkModule {
 	private const val REQUEST_TIMEOUT_SEC = 30L
 	private const val MAX_PARALLEL_REQUESTS = 5
-	private const val BASE_URL: String = "https://www.dactylgroup.com/tmp-api/restaurants.json"
+	private const val BASE_URL: String = "https://www.dactylgroup.com/tmp-api/"
 
 
 	@Provides

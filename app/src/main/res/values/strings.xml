@@ -1,3 +1,4 @@
 <resources>
 	<string name="app_name">DactylTestApp</string>
+	<string name="restaurant_image">Picture of restaurant</string>
 </resources>

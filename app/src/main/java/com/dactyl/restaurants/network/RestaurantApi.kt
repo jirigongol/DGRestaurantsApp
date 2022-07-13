@@ -4,6 +4,6 @@ import com.dactyl.restaurants.model.RestaurantsDTO
 import retrofit2.http.GET
 
 interface RestaurantApi {
-	@GET
+	@GET("restaurants.json")
 	suspend fun getRestaurants(): RestaurantsDTO
 }
