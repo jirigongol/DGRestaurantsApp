@@ -16,7 +16,7 @@ abstract class RestaurantsDatabase: RoomDatabase() {
 
 	companion object{
 		const val DATABASE_NAME = "restaurants_database"
-		const val DATABASE_VERSION = 1
+		const val DATABASE_VERSION = 3
 	}
 
 	abstract fun getRestaurantsDao(): RestaurantsDao

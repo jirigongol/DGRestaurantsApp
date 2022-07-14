@@ -32,7 +32,7 @@ import com.dactyl.restaurants.model.Restaurant
 
 @Composable
 fun RestaurantsListScreen(viewModel: RestaurantsListViewModel = viewModel()) {
-	val viewState by viewModel.viewState.collectAsState()
+	val viewState by viewModel.viewState.collectAsState(RestaurantsListViewState(restaurants = emptyList()))
 
 	if (viewState.loading) {
 	} else if (viewState.error != null) {
@@ -71,14 +71,14 @@ fun RestaurantItem(modifier: Modifier = Modifier, restaurant: Restaurant) {
 				.padding(all = 6.dp)
 		) {
 
-			AsyncImage(
-				contentScale = ContentScale.FillBounds,
-				model = "${restaurant.photos[0].photo.url}",
-				contentDescription = stringResource(id = R.string.restaurant_image),
-				modifier = modifier
-					.size(width = 80.dp, height = 120.dp)
-					.clip(MaterialTheme.shapes.medium)
-			)
+//			AsyncImage(
+//				contentScale = ContentScale.FillBounds,
+//				model = "${restaurant.photos[0].photo.url}",
+//				contentDescription = stringResource(id = R.string.restaurant_image),
+//				modifier = modifier
+//					.size(width = 80.dp, height = 120.dp)
+//					.clip(MaterialTheme.shapes.medium)
+//			)
 			Column(
 				modifier = modifier.padding(start = 12.dp, top = 16.dp)
 			) {
@@ -86,9 +86,10 @@ fun RestaurantItem(modifier: Modifier = Modifier, restaurant: Restaurant) {
 					text = restaurant.name, fontWeight = FontWeight.Bold
 				)
 				Text(text = restaurant.cuisines)
-				Text(
-					text = restaurant.userRating.aggregate_rating,
-				)
+				Text(text = restaurant.userRating.rating)
+				Text(text = restaurant.location.address)
+				Text(text = restaurant.location.longitude)
+				Text(text = restaurant.location.latitude)
 			}
 		}
 	}

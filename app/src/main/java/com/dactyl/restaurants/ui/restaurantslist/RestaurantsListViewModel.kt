@@ -4,10 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dactyl.restaurants.extensions.fold
+import com.dactyl.restaurants.model.Restaurant
 import com.dactyl.restaurants.network.RestaurantRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,9 +19,17 @@ class RestaurantsListViewModel @Inject constructor(
 ): ViewModel() {
 
 	private val _viewState = MutableStateFlow(RestaurantsListViewState(loading = true))
-	val viewState = _viewState.asStateFlow()
+	private val _restaurants = MutableStateFlow<List<Restaurant>>(emptyList())
 
+	val viewState = combine(_viewState, _restaurants) { state, restaurants ->
+		when {
+			restaurants.isNotEmpty() -> RestaurantsListViewState(restaurants = restaurants)
+			else -> state
+		}
+	}
 	init {
+		observeRestaurants()
+
 		viewModelScope.launch {
 			fetchRestaurants()
 		}
@@ -37,15 +46,20 @@ class RestaurantsListViewModel @Inject constructor(
 					)
 				}
 			},
-			{ restaurantsList ->
-				Log.e("TAG", "RestaurantsListSuccess: ${restaurantsList.size}")
-				_viewState.update {
-					RestaurantsListViewState(
-						restaurants = restaurantsList
-					)
-				}
+			{ updatedRestaurantsCount ->
+				Log.e("TAG", "MovieListSuccess: $updatedRestaurantsCount")
 			}
 		)
 	}
+
+	private fun observeRestaurants() {
+		viewModelScope.launch {
+			restaurantRepository.observeRestaurants().collect{
+				Log.d("TAG", "observeRestaurants: ${it.size}")
+				_restaurants.value = it
+			}
+		}
+	}
+
 
 }
