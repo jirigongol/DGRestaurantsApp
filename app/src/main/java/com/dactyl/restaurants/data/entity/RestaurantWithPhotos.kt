@@ -17,6 +17,7 @@ data class RestaurantWithPhotos(
 )
 
 fun RestaurantWithPhotos.toDomain() = Restaurant(
+	id = restaurantEntity.id,
 	name = restaurantEntity.name,
 	cuisines = restaurantEntity.cuisines,
 	userRating = UserRating(

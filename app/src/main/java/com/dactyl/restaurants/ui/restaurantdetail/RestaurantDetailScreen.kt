@@ -5,19 +5,30 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.dactyl.restaurants.R
 import com.dactyl.restaurants.model.Restaurant
 import com.dactyl.restaurants.ui.restaurantslist.RestaurantsListViewModel
 
 @Composable
-fun RestaurantDetailScreen(viewModel: RestaurantsListViewModel) {
+fun RestaurantDetailScreen(viewModel: RestaurantDetailViewModel = viewModel()) {
+	val viewState by viewModel.viewState.collectAsState(RestaurantDetailViewState(loading = true))
 
+	if (viewState.loading) {
+	} else if (viewState.error != null) {
+	} else {
+		viewState.restaurant?.let {
+			RestaurantDetail(restaurant = it)
+		}
+	}
 }
 
 @Composable

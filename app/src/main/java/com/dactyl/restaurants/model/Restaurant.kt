@@ -4,6 +4,7 @@ import com.dactyl.restaurants.data.entity.RestaurantEntity
 import com.squareup.moshi.Json
 
 data class Restaurant(
+	val id: String,
 	val name: String,
 	val location: Location,
 	val userRating: UserRating,

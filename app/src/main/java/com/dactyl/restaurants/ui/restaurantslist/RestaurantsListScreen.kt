@@ -3,6 +3,7 @@ package com.dactyl.restaurants.ui.restaurantslist
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,21 +32,28 @@ import com.dactyl.restaurants.R
 import com.dactyl.restaurants.model.Restaurant
 
 @Composable
-fun RestaurantsListScreen(viewModel: RestaurantsListViewModel = viewModel()) {
+fun RestaurantsListScreen(
+	navigateToRestaurantDetail: (restaurantId: String) -> Unit,
+	viewModel: RestaurantsListViewModel = viewModel()
+) {
 	val viewState by viewModel.viewState.collectAsState(RestaurantsListViewState(restaurants = emptyList()))
 
 	if (viewState.loading) {
 	} else if (viewState.error != null) {
 	} else {
 		viewState.restaurants?.let {
-			RestaurantsList(restaurants = it)
+			RestaurantsList(restaurants = it, onRestaurantClick = navigateToRestaurantDetail)
 		}
 	}
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
-fun RestaurantsList(modifier: Modifier = Modifier, restaurants: List<Restaurant>) {
+fun RestaurantsList(
+	modifier: Modifier = Modifier,
+	restaurants: List<Restaurant>,
+	onRestaurantClick: (restaurantId: String) -> Unit,
+) {
 	LazyColumn(
 		contentPadding = PaddingValues(12.dp),
 		verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -57,7 +65,9 @@ fun RestaurantsList(modifier: Modifier = Modifier, restaurants: List<Restaurant>
 					targetState = true
 				}
 			}
-			RestaurantItem(restaurant = restaurant)
+			RestaurantItem(
+				restaurant = restaurant,
+				modifier = modifier.clickable { onRestaurantClick(restaurant.id) })
 		}
 	}
 }
