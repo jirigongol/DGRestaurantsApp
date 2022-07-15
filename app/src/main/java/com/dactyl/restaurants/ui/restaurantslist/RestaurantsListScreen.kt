@@ -101,7 +101,6 @@ fun RestaurantItem(modifier: Modifier = Modifier, restaurant: Restaurant) {
 				)
 				Text(text = restaurant.cuisines)
 				Text(text = restaurant.userRating.rating)
-				Text(text = restaurant.location.address)
 			}
 		}
 	}
