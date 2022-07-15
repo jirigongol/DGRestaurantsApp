@@ -17,13 +17,17 @@ import coil.compose.AsyncImage
 import com.dactyl.restaurants.R
 import com.dactyl.restaurants.model.Restaurant
 import com.dactyl.restaurants.ui.restaurantslist.RestaurantsListViewModel
+import com.strv.movies.ui.error.ErrorScreen
+import com.strv.movies.ui.loading.LoadingScreen
 
 @Composable
 fun RestaurantDetailScreen(viewModel: RestaurantDetailViewModel = viewModel()) {
 	val viewState by viewModel.viewState.collectAsState(RestaurantDetailViewState(loading = true))
 
 	if (viewState.loading) {
+		LoadingScreen()
 	} else if (viewState.error != null) {
+		ErrorScreen(errorMessage = viewState.error!!)
 	} else {
 		viewState.restaurant?.let {
 			RestaurantDetail(restaurant = it)

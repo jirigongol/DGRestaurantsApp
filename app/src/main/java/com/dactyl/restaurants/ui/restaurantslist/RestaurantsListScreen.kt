@@ -30,6 +30,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.dactyl.restaurants.R
 import com.dactyl.restaurants.model.Restaurant
+import com.strv.movies.ui.error.ErrorScreen
+import com.strv.movies.ui.loading.LoadingScreen
 
 @Composable
 fun RestaurantsListScreen(
@@ -39,7 +41,9 @@ fun RestaurantsListScreen(
 	val viewState by viewModel.viewState.collectAsState(RestaurantsListViewState(restaurants = emptyList()))
 
 	if (viewState.loading) {
+		LoadingScreen()
 	} else if (viewState.error != null) {
+		ErrorScreen(errorMessage = viewState.error!!)
 	} else {
 		viewState.restaurants?.let {
 			RestaurantsList(restaurants = it, onRestaurantClick = navigateToRestaurantDetail)
