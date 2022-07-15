@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.dactyl.restaurants.data.entity.PhotoEntity
 import com.dactyl.restaurants.data.entity.RestaurantEntity
+import com.dactyl.restaurants.data.entity.RestaurantWithPhotos
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -17,7 +18,10 @@ interface RestaurantsDao {
 	suspend fun insertRestaurant(entity: RestaurantEntity)
 
 	@Query("SELECT * FROM restaurant")
-	fun observeMovieDetail(): Flow<List<RestaurantEntity>>
+	fun observeRestaurant(): Flow<List<RestaurantWithPhotos>>
+
+	@Query("SELECT * FROM restaurant WHERE id = :id")
+	fun observeRestaurantDetail(id: String): Flow<RestaurantWithPhotos>
 
 	@Transaction
 	@Insert(onConflict = OnConflictStrategy.REPLACE)

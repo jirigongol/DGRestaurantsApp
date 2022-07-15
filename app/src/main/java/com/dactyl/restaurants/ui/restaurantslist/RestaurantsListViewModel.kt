@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RestaurantsListViewModel @Inject constructor(
 	private val restaurantRepository: RestaurantRepository
-): ViewModel() {
+) : ViewModel() {
 
 	private val _viewState = MutableStateFlow(RestaurantsListViewState(loading = true))
 	private val _restaurants = MutableStateFlow<List<Restaurant>>(emptyList())
@@ -27,6 +27,7 @@ class RestaurantsListViewModel @Inject constructor(
 			else -> state
 		}
 	}
+
 	init {
 		observeRestaurants()
 
@@ -54,12 +55,11 @@ class RestaurantsListViewModel @Inject constructor(
 
 	private fun observeRestaurants() {
 		viewModelScope.launch {
-			restaurantRepository.observeRestaurants().collect{
+			restaurantRepository.observeRestaurants().collect {
 				Log.d("TAG", "observeRestaurants: ${it.size}")
 				_restaurants.value = it
 			}
 		}
 	}
-
 
 }

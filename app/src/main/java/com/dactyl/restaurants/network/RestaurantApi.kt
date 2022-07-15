@@ -9,7 +9,6 @@ interface RestaurantApi {
 	suspend fun getRestaurants(): RestaurantsResponse
 }
 
-
 data class RestaurantsResponse(
 	@Json(name = "restaurants")
 	val restaurants: List<RestaurantDTOWrapper>,

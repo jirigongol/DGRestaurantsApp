@@ -2,7 +2,7 @@ package com.dactyl.restaurants.network
 
 import androidx.room.withTransaction
 import com.dactyl.restaurants.data.dao.RestaurantsDao
-import com.dactyl.restaurants.data.entity.RestaurantEntity
+import com.dactyl.restaurants.data.entity.RestaurantWithPhotos
 import com.dactyl.restaurants.data.entity.toDomain
 import com.dactyl.restaurants.database.RestaurantsDatabase
 import com.dactyl.restaurants.extensions.Either
@@ -28,7 +28,7 @@ class RestaurantRepository @Inject constructor(
 
 					// Store photos
 					restaurantsDao.insertPhotos(
-						restaurantWrapper.restaurant.photos.map { it.photos.toEntity() }
+						restaurantWrapper.restaurant.photos.map { it.photos.toEntity(restaurantId = restaurantWrapper.restaurant.id) }
 					)
 				}
 			}
@@ -40,5 +40,12 @@ class RestaurantRepository @Inject constructor(
 	}
 
 	fun observeRestaurants(): Flow<List<Restaurant>> =
-		restaurantsDao.observeMovieDetail().map { it.map(RestaurantEntity::toDomain) }
+		restaurantsDao.observeRestaurant().map { restaurant ->
+			restaurant.map(RestaurantWithPhotos::toDomain)
+		}
+
+	fun observeRestaurantDetail(id: String): Flow<Restaurant?> =
+		restaurantsDao.observeRestaurantDetail(id).map {
+			it?.toDomain()
+		}
 }

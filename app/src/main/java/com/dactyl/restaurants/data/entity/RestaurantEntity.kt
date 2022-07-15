@@ -3,9 +3,6 @@ package com.dactyl.restaurants.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.dactyl.restaurants.model.Location
-import com.dactyl.restaurants.model.Restaurant
-import com.dactyl.restaurants.model.UserRating
 
 @Entity(tableName = "restaurant")
 class RestaurantEntity(
@@ -18,11 +15,4 @@ class RestaurantEntity(
 	@ColumnInfo(name = "address") val address: String,
 	@ColumnInfo(name = "latitude") val latitude: String,
 	@ColumnInfo(name = "longitude") val longitude: String
-)
-
-fun RestaurantEntity.toDomain() = Restaurant(
-	name = name,
-	cuisines = cuisines,
-	userRating = UserRating(aggregateRating, ratingColor),
-	location = Location(address, latitude, longitude),
 )

@@ -7,12 +7,18 @@ data class PhotoDTOWrapper(
 	@Json(name = "photo") val photos: PhotoDTO
 )
 
+data class Photo(
+	val id: String,
+	val url: String
+)
+
 data class PhotoDTO(
 	@Json(name = "id") val id: String,
 	@Json(name = "url") val url: String
 )
 
-fun PhotoDTO.toEntity() = PhotoEntity(
-	id = id,
+fun PhotoDTO.toEntity(restaurantId: String) = PhotoEntity(
+	photoId = id,
+	restaurantId = restaurantId,
 	url = url
 )

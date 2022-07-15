@@ -8,6 +8,7 @@ data class Restaurant(
 	val location: Location,
 	val userRating: UserRating,
 	val cuisines: String,
+	val photos: List<Photo>
 )
 
 data class RestaurantDTO(

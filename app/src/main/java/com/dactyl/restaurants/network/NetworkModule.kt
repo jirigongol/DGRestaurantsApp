@@ -1,8 +1,8 @@
 package com.dactyl.restaurants.network
 
+import com.dactyl.restaurants.BuildConfig
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.dactyl.restaurants.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,7 +33,6 @@ object NetworkModule {
 	private const val REQUEST_TIMEOUT_SEC = 30L
 	private const val MAX_PARALLEL_REQUESTS = 5
 	private const val BASE_URL: String = "https://www.dactylgroup.com/tmp-api/"
-
 
 	@Provides
 	@Singleton

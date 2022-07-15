@@ -71,14 +71,14 @@ fun RestaurantItem(modifier: Modifier = Modifier, restaurant: Restaurant) {
 				.padding(all = 6.dp)
 		) {
 
-//			AsyncImage(
-//				contentScale = ContentScale.FillBounds,
-//				model = "${restaurant.photos[0].photo.url}",
-//				contentDescription = stringResource(id = R.string.restaurant_image),
-//				modifier = modifier
-//					.size(width = 80.dp, height = 120.dp)
-//					.clip(MaterialTheme.shapes.medium)
-//			)
+			AsyncImage(
+				contentScale = ContentScale.FillBounds,
+				model = restaurant.photos.firstOrNull()?.url ?: "",
+				contentDescription = stringResource(id = R.string.restaurant_image),
+				modifier = modifier
+					.size(width = 80.dp, height = 120.dp)
+					.clip(MaterialTheme.shapes.medium)
+			)
 			Column(
 				modifier = modifier.padding(start = 12.dp, top = 16.dp)
 			) {
@@ -88,8 +88,6 @@ fun RestaurantItem(modifier: Modifier = Modifier, restaurant: Restaurant) {
 				Text(text = restaurant.cuisines)
 				Text(text = restaurant.userRating.rating)
 				Text(text = restaurant.location.address)
-				Text(text = restaurant.location.longitude)
-				Text(text = restaurant.location.latitude)
 			}
 		}
 	}

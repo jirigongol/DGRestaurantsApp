@@ -26,5 +26,6 @@ object DatabaseModule {
 			.build()
 
 	@Provides
-	fun provideRestaurantsDao(database: RestaurantsDatabase): RestaurantsDao = database.getRestaurantsDao()
+	fun provideRestaurantsDao(database: RestaurantsDatabase): RestaurantsDao =
+		database.getRestaurantsDao()
 }
