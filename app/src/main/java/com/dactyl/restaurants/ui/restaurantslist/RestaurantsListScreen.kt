@@ -1,7 +1,11 @@
 package com.dactyl.restaurants.ui.restaurantslist
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -65,13 +69,17 @@ fun RestaurantsList(
 		items(restaurants) { restaurant ->
 			val state = remember {
 				MutableTransitionState(false).apply {
-					// Start the animation immediately.
 					targetState = true
 				}
 			}
-			RestaurantItem(
-				restaurant = restaurant,
-				modifier = modifier.clickable { onRestaurantClick(restaurant.id) })
+			AnimatedVisibility(
+				visibleState = state,
+				enter = fadeIn(animationSpec = tween(300)) + scaleIn(animationSpec = tween(300))
+			) {
+				RestaurantItem(
+					restaurant = restaurant,
+					modifier = modifier.clickable { onRestaurantClick(restaurant.id) })
+			}
 		}
 	}
 }
@@ -96,9 +104,7 @@ fun RestaurantItem(modifier: Modifier = Modifier, restaurant: Restaurant) {
 			Column(
 				modifier = modifier.padding(start = 12.dp, top = 16.dp)
 			) {
-				Text(
-					text = restaurant.name, fontWeight = FontWeight.Bold
-				)
+				Text(text = restaurant.name, fontWeight = FontWeight.Bold)
 				Text(text = restaurant.cuisines)
 				Text(text = restaurant.userRating.rating)
 			}
