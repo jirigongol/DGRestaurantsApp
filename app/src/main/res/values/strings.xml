@@ -4,4 +4,9 @@
 	<string name="star_icon">Star icon, rating</string>
 	<string name="location_icon">Location icon, address</string>
 	<string name="restaurant_icon">Restaurant icon, types of cuisine</string>
+
+	<string name="restaurants_list_title">Restaurants</string>
+	<string name="restaurant_detail_title">Detail</string>
+	<string name="restaurants_map_title">Map</string>
+
 </resources>

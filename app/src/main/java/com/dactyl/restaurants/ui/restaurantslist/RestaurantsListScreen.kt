@@ -58,7 +58,6 @@ fun RestaurantsListScreen(
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun RestaurantsList(
-	modifier: Modifier = Modifier,
 	restaurants: List<Restaurant>,
 	onRestaurantClick: (restaurantId: String) -> Unit,
 ) {
@@ -77,16 +76,19 @@ fun RestaurantsList(
 				enter = fadeIn(animationSpec = tween(300)) + scaleIn(animationSpec = tween(300))
 			) {
 				RestaurantItem(
-					restaurant = restaurant,
-					modifier = modifier.clickable { onRestaurantClick(restaurant.id) })
+					restaurant = restaurant, onRestaurantClick = onRestaurantClick)
 			}
 		}
 	}
 }
 
 @Composable
-fun RestaurantItem(modifier: Modifier = Modifier, restaurant: Restaurant) {
-	Card {
+fun RestaurantItem(
+	modifier: Modifier = Modifier,
+	restaurant: Restaurant,
+	onRestaurantClick: (restaurantId: String) -> Unit,
+) {
+	Card(modifier = modifier.clickable { onRestaurantClick(restaurant.id) }) {
 		Row(
 			modifier = modifier
 				.fillMaxWidth()
