@@ -46,7 +46,7 @@ fun RestaurantsNavGraph(
 		composable(
 			route = RestaurantsDestinations.RESTAURANTS_MAP_ROUTE
 		) {
-			RestaurantsMapScreen()
+			RestaurantsMapScreen(viewModel = hiltViewModel())
 		}
 
 	}
