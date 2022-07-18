@@ -11,7 +11,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.dactyl.restaurants.R
 import com.dactyl.restaurants.model.Restaurant
+import com.dactyl.restaurants.ui.util.CustomSearchBar
 import com.strv.movies.ui.error.ErrorScreen
 import com.strv.movies.ui.loading.LoadingScreen
 import kotlin.math.acos
@@ -66,31 +66,39 @@ fun RestaurantsList(
 	restaurants: List<Restaurant>,
 	onRestaurantClick: (restaurantId: String) -> Unit,
 ) {
-	LazyColumn(
-		contentPadding = PaddingValues(16.dp),
-		verticalArrangement = Arrangement.spacedBy(8.dp)
-	) {
-		items(items = restaurants.sortedBy {
-			distanceInKm(
-				49.1959450000,
-				16.6117270000,
-				it.location.latitude.toDouble(),
-				it.location.longitude.toDouble()
-			)
-		}) { restaurant ->
-//			Log.e("TAG", distanceInKm(49.1959450000, 16.6117270000, restaurant.location.latitude.toDouble(), restaurant.location.longitude.toDouble()).toString() + restaurant.name)
-			val state = remember {
-				MutableTransitionState(false).apply {
-					targetState = true
-				}
-			}
-			AnimatedVisibility(
-				visibleState = state,
-				enter = fadeIn(animationSpec = tween(300)) + scaleIn(animationSpec = tween(300))
-			) {
-				RestaurantItem(
-					restaurant = restaurant, onRestaurantClick = onRestaurantClick
+	Column(modifier = Modifier.padding(16.dp)) {
+
+		CustomSearchBar(
+			hint = "Restaurant...",
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(bottom = 8.dp)
+		)
+		LazyColumn(
+			verticalArrangement = Arrangement.spacedBy(8.dp)
+		) {
+			items(items = restaurants.sortedBy {
+				distanceInKm(
+					49.1959450000,
+					16.6117270000,
+					it.location.latitude.toDouble(),
+					it.location.longitude.toDouble()
 				)
+			}) { restaurant ->
+//			Log.e("TAG", distanceInKm(49.1959450000, 16.6117270000, restaurant.location.latitude.toDouble(), restaurant.location.longitude.toDouble()).toString() + restaurant.name)
+				val state = remember {
+					MutableTransitionState(false).apply {
+						targetState = true
+					}
+				}
+				AnimatedVisibility(
+					visibleState = state,
+					enter = fadeIn(animationSpec = tween(300)) + scaleIn(animationSpec = tween(300))
+				) {
+					RestaurantItem(
+						restaurant = restaurant, onRestaurantClick = onRestaurantClick
+					)
+				}
 			}
 		}
 	}
