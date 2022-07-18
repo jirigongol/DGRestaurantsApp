@@ -54,9 +54,11 @@ fun RestaurantsListScreen(
 	} else if (viewState.error != null) {
 		ErrorScreen(errorMessage = viewState.error!!)
 	} else {
-		viewState.restaurants?.let {
-			RestaurantsList(restaurants = it, onRestaurantClick = navigateToRestaurantDetail)
-		}
+			RestaurantsList(
+				restaurants = viewState.restaurants,
+				onRestaurantClick = navigateToRestaurantDetail,
+				viewModel = viewModel
+			)
 	}
 }
 
@@ -65,7 +67,10 @@ fun RestaurantsListScreen(
 fun RestaurantsList(
 	restaurants: List<Restaurant>,
 	onRestaurantClick: (restaurantId: String) -> Unit,
+	viewModel: RestaurantsListViewModel = viewModel()
 ) {
+	val isSearching by remember { viewModel.isSearching }
+
 	Column(modifier = Modifier.padding(16.dp)) {
 
 		CustomSearchBar(
@@ -73,18 +78,13 @@ fun RestaurantsList(
 			modifier = Modifier
 				.fillMaxWidth()
 				.padding(bottom = 8.dp)
-		)
+		) {
+			viewModel.searchRestaurantsList(it)
+		}
 		LazyColumn(
 			verticalArrangement = Arrangement.spacedBy(8.dp)
 		) {
-			items(items = restaurants.sortedBy {
-				distanceInKm(
-					49.1959450000,
-					16.6117270000,
-					it.location.latitude.toDouble(),
-					it.location.longitude.toDouble()
-				)
-			}) { restaurant ->
+			items(items = restaurants) { restaurant ->
 //			Log.e("TAG", distanceInKm(49.1959450000, 16.6117270000, restaurant.location.latitude.toDouble(), restaurant.location.longitude.toDouble()).toString() + restaurant.name)
 				val state = remember {
 					MutableTransitionState(false).apply {
