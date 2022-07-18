@@ -36,6 +36,9 @@ import com.dactyl.restaurants.R
 import com.dactyl.restaurants.model.Restaurant
 import com.strv.movies.ui.error.ErrorScreen
 import com.strv.movies.ui.loading.LoadingScreen
+import kotlin.math.acos
+import kotlin.math.cos
+import kotlin.math.sin
 
 @Composable
 fun RestaurantsListScreen(
@@ -65,7 +68,15 @@ fun RestaurantsList(
 		contentPadding = PaddingValues(12.dp),
 		verticalArrangement = Arrangement.spacedBy(12.dp)
 	) {
-		items(restaurants) { restaurant ->
+		items(items = restaurants.sortedBy {
+			distanceInKm(
+				49.1959450000,
+				16.6117270000,
+				it.location.latitude.toDouble(),
+				it.location.longitude.toDouble()
+			)
+		}) { restaurant ->
+//			Log.e("TAG", distanceInKm(49.1959450000, 16.6117270000, restaurant.location.latitude.toDouble(), restaurant.location.longitude.toDouble()).toString() + restaurant.name)
 			val state = remember {
 				MutableTransitionState(false).apply {
 					targetState = true
@@ -76,7 +87,8 @@ fun RestaurantsList(
 				enter = fadeIn(animationSpec = tween(300)) + scaleIn(animationSpec = tween(300))
 			) {
 				RestaurantItem(
-					restaurant = restaurant, onRestaurantClick = onRestaurantClick)
+					restaurant = restaurant, onRestaurantClick = onRestaurantClick
+				)
 			}
 		}
 	}
@@ -112,4 +124,25 @@ fun RestaurantItem(
 			}
 		}
 	}
+}
+
+fun distanceInKm(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+	val theta = lon1 - lon2
+	var dist =
+		sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(
+			deg2rad(lat2)
+		) * cos(deg2rad(theta))
+	dist = acos(dist)
+	dist = rad2deg(dist)
+	dist *= 60 * 1.1515
+	dist *= 1.609344
+	return dist
+}
+
+private fun deg2rad(deg: Double): Double {
+	return deg * Math.PI / 180.0
+}
+
+private fun rad2deg(rad: Double): Double {
+	return rad * 180.0 / Math.PI
 }
