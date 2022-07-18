@@ -7,14 +7,15 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
@@ -27,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -65,8 +67,8 @@ fun RestaurantsList(
 	onRestaurantClick: (restaurantId: String) -> Unit,
 ) {
 	LazyColumn(
-		contentPadding = PaddingValues(12.dp),
-		verticalArrangement = Arrangement.spacedBy(12.dp)
+		contentPadding = PaddingValues(16.dp),
+		verticalArrangement = Arrangement.spacedBy(8.dp)
 	) {
 		items(items = restaurants.sortedBy {
 			distanceInKm(
@@ -100,29 +102,42 @@ fun RestaurantItem(
 	restaurant: Restaurant,
 	onRestaurantClick: (restaurantId: String) -> Unit,
 ) {
-	Card(modifier = modifier.clickable { onRestaurantClick(restaurant.id) }) {
-		Row(
-			modifier = modifier
-				.fillMaxWidth()
-				.padding(all = 6.dp)
-		) {
-
+	Column(
+		modifier = modifier
+			.fillMaxWidth()
+			.clickable { onRestaurantClick(restaurant.id) }
+	) {
+		Card(shape = MaterialTheme.shapes.medium) {
 			AsyncImage(
-				contentScale = ContentScale.FillBounds,
+				contentScale = ContentScale.Crop,
 				model = restaurant.photos.firstOrNull()?.url ?: "",
 				contentDescription = stringResource(id = R.string.restaurant_image),
 				modifier = modifier
-					.size(width = 80.dp, height = 120.dp)
-					.clip(MaterialTheme.shapes.medium)
+					.fillMaxWidth()
+					.height(160.dp)
+					.clip(MaterialTheme.shapes.large)
 			)
-			Column(
-				modifier = modifier.padding(start = 12.dp, top = 16.dp)
+		}
+
+		Row(
+			horizontalArrangement = Arrangement.SpaceBetween,
+			modifier = modifier
+				.padding(top = 8.dp)
+				.fillMaxWidth(),
+
 			) {
-				Text(text = restaurant.name, fontWeight = FontWeight.Bold)
-				Text(text = restaurant.cuisines)
-				Text(text = restaurant.userRating.rating)
+			Text(text = restaurant.name, fontWeight = FontWeight.Bold)
+			Row() {
+				Image(
+					painter = painterResource(id = R.drawable.ic_star_rating),
+					contentDescription = stringResource(id = R.string.star_icon),
+					modifier = modifier.padding(end = 6.dp)
+				)
+				Text(text = restaurant.userRating.rating, fontWeight = FontWeight.Bold)
 			}
 		}
+		Text(text = restaurant.cuisines)
+
 	}
 }
 

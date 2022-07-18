@@ -78,7 +78,7 @@ fun RestaurantInfo(modifier: Modifier = Modifier, restaurant: Restaurant) {
 		)
 		Row(modifier = modifier.padding(bottom = 16.dp)) {
 			Image(
-				painter = painterResource(id = R.drawable.ic_star),
+				painter = painterResource(id = R.drawable.ic_star_rating),
 				contentDescription = stringResource(id = R.string.star_icon),
 				modifier = modifier.padding(end = 12.dp)
 			)
