@@ -7,4 +7,13 @@
 	<color name="teal_700">#FF018786</color>
 	<color name="black">#FF000000</color>
 	<color name="white">#FFFFFFFF</color>
+
+	<color name="statusBar">@color/statusBarLightMode</color>
+
+	<color name="statusBarLightMode">#0D000000</color>
+	<color name="statusBarDarkMode">#211A19</color>
+
+	<color name="starRating">#C10005</color>
+	<color name="platesIcon">#FF000000</color>
+
 </resources>

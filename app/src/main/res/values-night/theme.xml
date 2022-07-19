@@ -3,7 +3,7 @@
 
 	<style name="Theme.DactylTestApp" parent="android:Theme.Material.Light.NoActionBar">
 		<item name="android:statusBarColor">@color/statusBar</item>
-		<item name="android:windowLightStatusBar">true</item>
+		<item name="android:windowLightStatusBar">false</item>
 	</style>
 
 </resources>
