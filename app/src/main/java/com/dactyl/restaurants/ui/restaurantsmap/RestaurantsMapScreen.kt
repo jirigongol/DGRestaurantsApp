@@ -1,5 +1,6 @@
 package com.dactyl.restaurants.ui.restaurantsmap
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -9,7 +10,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dactyl.restaurants.model.Restaurant
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -20,13 +20,18 @@ import com.strv.movies.ui.loading.LoadingScreen
 fun RestaurantsMapScreen(viewModel: RestaurantsMapViewModel = viewModel()) {
 	val viewState by viewModel.viewState.collectAsState(RestaurantsMapViewState(restaurants = emptyList()))
 
-	if (viewState.loading) {
-		LoadingScreen()
-	} else if (viewState.error != null) {
-		ErrorScreen(errorMessage = viewState.error!!)
-	} else {
-		viewState.restaurants?.let {
-			RestaurantsMap(restaurants = it)
+	when {
+		viewState.loading -> {
+			LoadingScreen()
+		}
+		viewState.error != null -> {
+			ErrorScreen(errorMessage = viewState.error!!)
+		}
+		else -> {
+			RestaurantsMap(
+				restaurants = viewState.restaurants,
+				userCurentPosition = viewState.myPosition
+			)
 		}
 	}
 }
@@ -34,14 +39,17 @@ fun RestaurantsMapScreen(viewModel: RestaurantsMapViewModel = viewModel()) {
 @Composable
 fun RestaurantsMap(
 	restaurants: List<Restaurant>,
+	userCurentPosition: LatLng,
 ) {
 
 	var location = LatLng(
 		49.2317480000,
 		16.5901280000
 	)
+
+	Log.d("xxxx", "RestaurantsMap: $userCurentPosition")
 	val cameraPositionState = rememberCameraPositionState {
-		position = CameraPosition.fromLatLngZoom(location, 10f)
+		position = CameraPosition.fromLatLngZoom(userCurentPosition, 10f)
 	}
 	GoogleMap(
 		modifier = Modifier.fillMaxSize(),
@@ -60,6 +68,7 @@ fun RestaurantsMap(
 				snippet = "Title Snippet"
 			)
 		}
+//		Marker(position = userCurentPosition)
 	}
 }
 

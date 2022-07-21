@@ -5,11 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dactyl.restaurants.extensions.fold
+import com.dactyl.restaurants.location.LocationInteractor
 import com.dactyl.restaurants.model.Restaurant
 import com.dactyl.restaurants.network.RestaurantRepository
+import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -17,6 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RestaurantsListViewModel @Inject constructor(
+	private val locationInteractor: LocationInteractor,
 	private val restaurantRepository: RestaurantRepository
 ) : ViewModel() {
 
@@ -27,19 +31,48 @@ class RestaurantsListViewModel @Inject constructor(
 	private var isSearchStarting = true
 	var isSearching = mutableStateOf(false)
 
-	val viewState = combine(_viewState, _restaurants) { state, restaurants ->
-		when {
-			restaurants.isNotEmpty() || isSearching.value -> RestaurantsListViewState(restaurants = restaurants.sortByDistance())
-			else -> state
+	private var _userCurrentLocation = MutableStateFlow<LatLng>(LatLng(0.0, 0.0))
+
+	val viewState =
+		combine(_viewState, _restaurants, _userCurrentLocation) { state, restaurants, location ->
+			when {
+				restaurants.isNotEmpty() || isSearching.value -> RestaurantsListViewState(
+					restaurants = restaurants.sortByDistance(),
+					location = location
+				)
+				else -> state
+			}
 		}
-	}
 
 	init {
+		Log.d("xxxx", "INIT RestaurantsListViewModel")
 		observeRestaurants()
 
 		viewModelScope.launch {
 			fetchRestaurants()
 		}
+
+		observeLocationData()
+		locationInteractor.start()
+	}
+
+//	override fun onStart(owner: LifecycleOwner) {
+//		super.onStart(owner)
+//		Log.d("xxxx", "onStart: LIST ")
+//		locationInteractor.start()
+//	}
+//
+//	override fun onStop(owner: LifecycleOwner) {
+//		Log.d("xxxx", "onStop LIST: ")
+//
+//		locationInteractor.stop()
+//		super.onStop(owner)
+//	}
+
+	override fun onCleared() {
+		Log.d("xxxx", "onCleared LIST: ")
+		locationInteractor.stop()
+		super.onCleared()
 	}
 
 	private suspend fun fetchRestaurants() {
@@ -85,6 +118,7 @@ class RestaurantsListViewModel @Inject constructor(
 				it.name.contains(query.trim(), ignoreCase = true)
 			}.sortByDistance()
 
+
 			if (isSearchStarting) {
 				cachedRestaurantList = _restaurants.value
 				isSearchStarting = false
@@ -98,12 +132,24 @@ class RestaurantsListViewModel @Inject constructor(
 	private fun List<Restaurant>.sortByDistance(): List<Restaurant> {
 		val result = this.sortedBy {
 			distanceInKm(
-				49.1959450000,
-				16.6117270000,
+
+				_userCurrentLocation.value.latitude,
+				_userCurrentLocation.value.longitude,
 				it.location.latitude.toDouble(),
 				it.location.longitude.toDouble()
 			)
+
 		}
+
 		return result
 	}
+
+	private fun observeLocationData() {
+		viewModelScope.launch {
+			locationInteractor.locationData.collectLatest {
+				Log.d("xxxx", "List VM location: $it")
+			}
+		}
+	}
 }
+

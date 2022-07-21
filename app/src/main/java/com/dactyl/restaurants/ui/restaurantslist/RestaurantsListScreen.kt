@@ -35,7 +35,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.dactyl.restaurants.R
 import com.dactyl.restaurants.model.Restaurant
+import com.dactyl.restaurants.ui.restaurantdetail.RestaurantDetail
 import com.dactyl.restaurants.ui.util.CustomSearchBar
+import com.google.android.gms.maps.model.LatLng
 import com.strv.movies.ui.error.ErrorScreen
 import com.strv.movies.ui.loading.LoadingScreen
 import kotlin.math.acos
@@ -47,19 +49,21 @@ fun RestaurantsListScreen(
 	navigateToRestaurantDetail: (restaurantId: String) -> Unit,
 	viewModel: RestaurantsListViewModel = viewModel()
 ) {
-	val viewState by viewModel.viewState.collectAsState(RestaurantsListViewState(restaurants = emptyList()))
+	val viewState by viewModel.viewState.collectAsState(RestaurantsListViewState(restaurants = emptyList(), location = null))
 
 	if (viewState.loading) {
 		LoadingScreen()
 	} else if (viewState.error != null) {
 		ErrorScreen(errorMessage = viewState.error!!)
 	} else {
+		viewState.location?.let {
 			RestaurantsList(
 				restaurants = viewState.restaurants,
 				onRestaurantClick = navigateToRestaurantDetail,
-				viewModel = viewModel
+				viewModel = viewModel,
+				location = it
 			)
-	}
+	}}
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
@@ -67,7 +71,8 @@ fun RestaurantsListScreen(
 fun RestaurantsList(
 	restaurants: List<Restaurant>,
 	onRestaurantClick: (restaurantId: String) -> Unit,
-	viewModel: RestaurantsListViewModel = viewModel()
+	viewModel: RestaurantsListViewModel = viewModel(),
+	location: LatLng
 ) {
 	val isSearching by remember { viewModel.isSearching }
 
@@ -81,6 +86,7 @@ fun RestaurantsList(
 		) {
 			viewModel.searchRestaurantsList(it)
 		}
+		Text(text = location.toString())
 		LazyColumn(
 			verticalArrangement = Arrangement.spacedBy(8.dp)
 		) {
