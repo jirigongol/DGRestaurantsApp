@@ -68,6 +68,9 @@ dependencies {
 	androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 	debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
+	implementation "androidx.compose.material:material-icons-extended:$compose_version"
+
+
 	//Network
 	implementation "com.squareup.okhttp3:okhttp:4.9.3"
 	implementation "com.squareup.okhttp3:logging-interceptor:4.9.3"

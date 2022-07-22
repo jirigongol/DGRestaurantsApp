@@ -23,7 +23,6 @@ class RestaurantsListViewModel @Inject constructor(
 	private val locationInteractor: LocationInteractor,
 	private val restaurantRepository: RestaurantRepository
 ) : ViewModel() {
-
 	private val _viewState = MutableStateFlow(RestaurantsListViewState(loading = true))
 	private val _restaurants = MutableStateFlow<List<Restaurant>>(emptyList())
 
@@ -55,19 +54,6 @@ class RestaurantsListViewModel @Inject constructor(
 		observeLocationData()
 		locationInteractor.start()
 	}
-
-//	override fun onStart(owner: LifecycleOwner) {
-//		super.onStart(owner)
-//		Log.d("xxxx", "onStart: LIST ")
-//		locationInteractor.start()
-//	}
-//
-//	override fun onStop(owner: LifecycleOwner) {
-//		Log.d("xxxx", "onStop LIST: ")
-//
-//		locationInteractor.stop()
-//		super.onStop(owner)
-//	}
 
 	override fun onCleared() {
 		Log.d("xxxx", "onCleared LIST: ")
@@ -125,7 +111,6 @@ class RestaurantsListViewModel @Inject constructor(
 			}
 			_restaurants.value = results
 			isSearching.value = true
-
 		}
 	}
 
@@ -138,9 +123,7 @@ class RestaurantsListViewModel @Inject constructor(
 				it.location.latitude.toDouble(),
 				it.location.longitude.toDouble()
 			)
-
 		}
-
 		return result
 	}
 
@@ -148,6 +131,8 @@ class RestaurantsListViewModel @Inject constructor(
 		viewModelScope.launch {
 			locationInteractor.locationData.collectLatest {
 				Log.d("xxxx", "List VM location: $it")
+				_userCurrentLocation.value =  LatLng(it.latitude, it.longitude)
+
 			}
 		}
 	}

@@ -1,8 +1,6 @@
 package com.dactyl.restaurants.ui.restaurantsmap
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dactyl.restaurants.location.LocationInteractor
@@ -11,11 +9,8 @@ import com.dactyl.restaurants.network.RestaurantRepository
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,10 +31,10 @@ class RestaurantsMapViewModel @Inject constructor(
 //	private var _userCurrentLng = mutableStateOf(0.0)
 //	var userCurrentLng: MutableState<Double> = _userCurrentLng
 
-	private val _currentPosition = MutableStateFlow<LatLng>(LatLng(.0, .0))
+	private val _userCurrentPosition = MutableStateFlow<LatLng>(LatLng(.0, .0))
 //	val currentPosition = _currentPosition.asStateFlow()
 
-	val viewState = combine(_viewState, _restaurants, _currentPosition) { state, restaurants, myPosition ->
+	val viewState = combine(_viewState, _restaurants, _userCurrentPosition) { state, restaurants, myPosition ->
 		when {
 			restaurants.isNotEmpty() -> RestaurantsMapViewState(restaurants = restaurants, myPosition = myPosition)
 			else -> state
@@ -55,7 +50,7 @@ class RestaurantsMapViewModel @Inject constructor(
 		viewModelScope.launch {
 			locationInteractor.locationData.collectLatest {
 				Log.d("xxxx", "Maps VM location: $it")
-				_currentPosition.value =  LatLng(it.latitude, it.longitude)
+				_userCurrentPosition.value =  LatLng(it.latitude, it.longitude)
 			}
 		}
 	}

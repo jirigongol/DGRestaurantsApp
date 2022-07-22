@@ -74,10 +74,7 @@ fun RestaurantsList(
 	viewModel: RestaurantsListViewModel = viewModel(),
 	location: LatLng
 ) {
-	val isSearching by remember { viewModel.isSearching }
-
 	Column(modifier = Modifier.padding(16.dp)) {
-
 		CustomSearchBar(
 			hint = "Restaurant...",
 			modifier = Modifier
@@ -86,7 +83,6 @@ fun RestaurantsList(
 		) {
 			viewModel.searchRestaurantsList(it)
 		}
-		Text(text = location.toString())
 		LazyColumn(
 			verticalArrangement = Arrangement.spacedBy(8.dp)
 		) {

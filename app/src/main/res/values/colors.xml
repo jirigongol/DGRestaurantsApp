@@ -16,4 +16,6 @@
 	<color name="starRating">#C10005</color>
 	<color name="platesIcon">#FF000000</color>
 
+	<color name="myLocation">#59ff00</color>
+
 </resources>

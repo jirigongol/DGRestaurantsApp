@@ -9,4 +9,6 @@
 	<string name="restaurant_detail_title">Detail</string>
 	<string name="restaurants_map_title">Map</string>
 
+	<string name="fab_description">Put arguments on one line</string>
+
 </resources>
