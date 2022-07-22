@@ -29,7 +29,7 @@ class RestaurantsMapViewModel @Inject constructor(
 	private val _viewState = MutableStateFlow(RestaurantsMapViewState(loading = true))
 	private val _restaurants = MutableStateFlow<List<Restaurant>>(emptyList())
 
-	private val _userCurrentLocation = MutableStateFlow(LatLng(.0, .0))
+	private val _userCurrentLocation = MutableStateFlow(LatLng(49.1950602 , 16.6068371))
 
 	val viewState =
 		combine(_viewState, _restaurants, _userCurrentLocation) { state, restaurants, myPosition ->

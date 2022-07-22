@@ -34,7 +34,7 @@ fun LocationPermissionsDialog(
 		},
 		text = {
 			Text(
-				text = "To fully benefit from Restaurants app, you need to allow location permissions",
+				text = "To fully benefit from Restaurants app, you need to allow Precise location permissions",
 				style = MaterialTheme.typography.subtitle2
 			)
 		},
@@ -65,7 +65,6 @@ fun LocationPermissionsDialog(
 					colors = ButtonDefaults.buttonColors(
 						backgroundColor = colorResource(id = R.color.grantPermissions),
 						contentColor = MaterialTheme.colors.onError
-
 					)
 				) {
 					Text(text = positiveText.uppercase(), textAlign = TextAlign.Center)

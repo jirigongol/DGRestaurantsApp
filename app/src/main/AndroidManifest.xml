@@ -3,7 +3,6 @@
 	package="com.dactyl.restaurants">
 
 	<uses-permission android:name="android.permission.INTERNET" />
-
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -22,7 +21,6 @@
 			android:theme="@style/Theme.DactylTestApp">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
-
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
@@ -30,5 +28,4 @@
 			android:name="com.google.android.geo.API_KEY"
 			android:value="AIzaSyCkXAcymTIw0ZntIvTM0rDrpFbnLLte3Ok" />
 	</application>
-
 </manifest>

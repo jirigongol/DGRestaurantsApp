@@ -57,7 +57,6 @@ fun CustomSearchBar(
 				.background(colorResource(id = R.color.searchBarColor), RoundedCornerShape(6.dp))
 				.onFocusChanged {
 					isHintDisplayed = it.isFocused != true
-
 				},
 			cursorBrush = SolidColor(colorResource(id = R.color.searchBarTextColor)),
 			decorationBox = { innerTextField ->

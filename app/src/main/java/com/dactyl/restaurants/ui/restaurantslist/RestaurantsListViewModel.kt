@@ -47,7 +47,7 @@ class RestaurantsListViewModel @Inject constructor(
 							restaurants.sortByDistance()
 						} else {
 							restaurants.sortByAlphabet()
-						},location = location
+						}, location = location
 					)
 				else -> state
 			}
@@ -71,9 +71,7 @@ class RestaurantsListViewModel @Inject constructor(
 			{ error ->
 				Log.d("TAG", "RestaurantsListLoadingError: $error")
 				_viewState.update {
-					RestaurantsListViewState(
-						error = error
-					)
+					RestaurantsListViewState(error = error)
 				}
 			},
 			{ updatedRestaurantsCount ->
@@ -95,7 +93,6 @@ class RestaurantsListViewModel @Inject constructor(
 		viewModelScope.launch {
 			locationInteractor.locationData.collectLatest {
 				_userCurrentLocation.value = LatLng(it.latitude, it.longitude)
-
 			}
 		}
 	}
@@ -115,14 +112,17 @@ class RestaurantsListViewModel @Inject constructor(
 			}
 			val results = listToSearch.filter {
 				it.name.contains(query.trim(), ignoreCase = true)
-			}.sortByDistance()
-
+			}
 
 			if (isSearchStarting) {
 				cachedRestaurantList = _restaurants.value
 				isSearchStarting = false
 			}
-			_restaurants.value = results
+			_restaurants.value = if (permissions.value) {
+				results.sortByDistance()
+			} else {
+				results.sortByAlphabet()
+			}
 			isSearching.value = true
 		}
 	}

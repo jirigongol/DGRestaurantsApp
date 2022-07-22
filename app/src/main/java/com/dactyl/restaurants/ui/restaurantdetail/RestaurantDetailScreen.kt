@@ -78,7 +78,6 @@ fun RestaurantDetail(modifier: Modifier = Modifier, restaurant: Restaurant) {
 			RestaurantInfo(restaurant = restaurant)
 		}
 	}
-
 }
 
 @Composable

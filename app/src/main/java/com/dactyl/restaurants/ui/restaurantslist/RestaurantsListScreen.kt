@@ -1,7 +1,6 @@
 package com.dactyl.restaurants.ui.restaurantslist
 
 import android.Manifest
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
@@ -48,9 +47,6 @@ import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
 import com.strv.movies.ui.error.ErrorScreen
 import com.strv.movies.ui.loading.LoadingScreen
-import kotlin.math.acos
-import kotlin.math.cos
-import kotlin.math.sin
 
 @Composable
 fun RestaurantsListScreen(
@@ -58,9 +54,7 @@ fun RestaurantsListScreen(
 	viewModel: RestaurantsListViewModel = viewModel()
 ) {
 	val viewState by viewModel.viewState.collectAsState(
-		RestaurantsListViewState(
-			restaurants = emptyList(),
-		)
+		RestaurantsListViewState(restaurants = emptyList())
 	)
 	when {
 		viewState.loading -> {
@@ -73,7 +67,7 @@ fun RestaurantsListScreen(
 			RestaurantsList(
 				restaurants = viewState.restaurants,
 				onRestaurantClick = navigateToRestaurantDetail,
-				viewModel = viewModel,
+				viewModel = viewModel
 			)
 		}
 	}
@@ -106,28 +100,21 @@ fun RestaurantsList(
 							openDialog = false
 							viewModel.permissionsDenied.value = false
 						},
-						positive = {
-							permissionState.launchPermissionRequest()
-						}
+						positive = { permissionState.launchPermissionRequest() }
 					)
 				},
 				permissionNotAvailableContent = {
 					LocationPermissionsDialog(
 						positiveText = "OPEN SETTINGS",
-						negative = {
-							openDialog = false
-						},
+						negative = { openDialog = false },
 						positive = context::openSettings
 					)
 				}) {
-//            Permissions Granted
-				Log.d("xxxx", "PERMISSIONS GRANTED ")
-
 				viewModel.permissions.value = true
 				viewModel.observeLocationData()
 			}
 		}
-	} else return
+	}
 
 	Column(modifier = modifier.padding(16.dp)) {
 		CustomSearchBar(
@@ -142,19 +129,15 @@ fun RestaurantsList(
 			verticalArrangement = Arrangement.spacedBy(8.dp)
 		) {
 			items(items = restaurants) { restaurant ->
-//			Log.e("TAG", distanceInKm(49.1959450000, 16.6117270000, restaurant.location.latitude.toDouble(), restaurant.location.longitude.toDouble()).toString() + restaurant.name)
 				val state = remember {
-					MutableTransitionState(false).apply {
-						targetState = true
-					}
+					MutableTransitionState(false).apply { targetState = true }
 				}
 				AnimatedVisibility(
 					visibleState = state,
-					enter = fadeIn(animationSpec = tween(300)) + scaleIn(animationSpec = tween(300))
+					enter = fadeIn(animationSpec = tween(300))
+						+ scaleIn(animationSpec = tween(300))
 				) {
-					RestaurantItem(
-						restaurant = restaurant, onRestaurantClick = onRestaurantClick
-					)
+					RestaurantItem(restaurant = restaurant, onRestaurantClick = onRestaurantClick)
 				}
 			}
 		}
