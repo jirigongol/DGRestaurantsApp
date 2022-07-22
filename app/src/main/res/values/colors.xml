@@ -14,8 +14,10 @@
 	<color name="statusBarDarkMode">#211A19</color>
 
 	<color name="starRating">#C10005</color>
-	<color name="platesIcon">#FF000000</color>
+	<color name="platesIcon">#211A19</color>
 
 	<color name="myLocation">#59ff00</color>
+	<color name="searchBarColor">#FFFFFFFF</color>
+	<color name="searchBarTextColor">#000000</color>
 
 </resources>

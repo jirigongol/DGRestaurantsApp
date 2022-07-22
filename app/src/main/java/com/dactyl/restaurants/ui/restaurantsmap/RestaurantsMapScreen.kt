@@ -1,6 +1,5 @@
 package com.dactyl.restaurants.ui.restaurantsmap
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FloatingActionButton
@@ -52,16 +51,15 @@ fun RestaurantsMapScreen(viewModel: RestaurantsMapViewModel = viewModel()) {
 
 @Composable
 fun RestaurantsMap(
+	modifier: Modifier = Modifier,
 	restaurants: List<Restaurant>,
-	userCurrentPosition: LatLng,
+	userCurrentPosition: LatLng
 ) {
 	val scaffoldState = rememberScaffoldState()
 
-	Log.d("xxxx", "RestaurantsMap: $userCurrentPosition")
 	val cameraPositionState = rememberCameraPositionState {
 		position = CameraPosition.fromLatLngZoom(userCurrentPosition, 16f)
 	}
-
 	Scaffold(
 		scaffoldState = scaffoldState,
 		floatingActionButton = {
@@ -72,7 +70,7 @@ fun RestaurantsMap(
 				},
 				backgroundColor = MaterialTheme.colors.background,
 				contentColor = MaterialTheme.colors.primary,
-				modifier = Modifier.padding(bottom = 48.dp)
+				modifier = modifier.padding(bottom = 48.dp)
 			) {
 				Icon(
 					imageVector = Icons.Default.MyLocation,
@@ -84,7 +82,9 @@ fun RestaurantsMap(
 	) {
 		cameraPositionState.position = CameraPosition.fromLatLngZoom(userCurrentPosition, 16f)
 		GoogleMap(
-			modifier = Modifier.fillMaxSize(),
+			modifier = modifier
+				.fillMaxSize()
+				.padding(bottom = 8.dp),
 			cameraPositionState = cameraPositionState,
 			uiSettings = MapUiSettings(zoomControlsEnabled = false)
 		) {
@@ -95,9 +95,7 @@ fun RestaurantsMap(
 					BitmapDescriptorFactory.HUE_GREEN
 				)
 			)
-// Create multiple markers from list
 			restaurants.forEach { restaurant ->
-
 				Marker(
 					position = LatLng(
 						restaurant.location.latitude.toDouble(),
@@ -107,7 +105,6 @@ fun RestaurantsMap(
 					snippet = "Title Snippet"
 				)
 			}
-
 		}
 	}
 }

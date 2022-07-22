@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<color name="statusBar">@color/statusBarDarkMode</color>
-	<color name="platesIcon">#FFFFFFFF</color>
+	<color name="platesIcon">#EDE0DE</color>
+	<color name="searchBarColor">#1A1312</color>
+	<color name="searchBarTextColor">#EDE0DE</color>
 
 </resources>

@@ -22,8 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.dactyl.restaurants.R
 
 @Composable
 fun CustomSearchBar(
@@ -47,19 +50,23 @@ fun CustomSearchBar(
 			},
 			maxLines = 1,
 			singleLine = true,
-			textStyle = TextStyle(color = Color.Black),
+			textStyle = TextStyle(colorResource(id = R.color.searchBarTextColor)),
 			modifier = Modifier
 				.fillMaxWidth()
 				.shadow(5.dp, RoundedCornerShape(6.dp))
-				.background(Color.White, RoundedCornerShape(6.dp))
+				.background(colorResource(id = R.color.searchBarColor), RoundedCornerShape(6.dp))
 				.onFocusChanged {
 					isHintDisplayed = it.isFocused != true
 
 				},
+			cursorBrush = SolidColor(colorResource(id = R.color.searchBarTextColor)),
 			decorationBox = { innerTextField ->
 				Row(
 					Modifier
-						.background(Color.White, RoundedCornerShape(6.dp))
+						.background(
+							colorResource(id = R.color.searchBarColor),
+							RoundedCornerShape(6.dp)
+						)
 						.padding(all = 10.dp)
 				) {
 					Icon(Icons.Default.Search, contentDescription = null)

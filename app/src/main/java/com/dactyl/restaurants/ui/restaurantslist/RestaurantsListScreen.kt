@@ -35,9 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.dactyl.restaurants.R
 import com.dactyl.restaurants.model.Restaurant
-import com.dactyl.restaurants.ui.restaurantdetail.RestaurantDetail
 import com.dactyl.restaurants.ui.util.CustomSearchBar
-import com.google.android.gms.maps.model.LatLng
 import com.strv.movies.ui.error.ErrorScreen
 import com.strv.movies.ui.loading.LoadingScreen
 import kotlin.math.acos
@@ -49,35 +47,44 @@ fun RestaurantsListScreen(
 	navigateToRestaurantDetail: (restaurantId: String) -> Unit,
 	viewModel: RestaurantsListViewModel = viewModel()
 ) {
-	val viewState by viewModel.viewState.collectAsState(RestaurantsListViewState(restaurants = emptyList(), location = null))
+	val viewState by viewModel.viewState.collectAsState(
+		RestaurantsListViewState(
+			restaurants = emptyList(),
+			location = null
+		)
+	)
 
-	if (viewState.loading) {
-		LoadingScreen()
-	} else if (viewState.error != null) {
-		ErrorScreen(errorMessage = viewState.error!!)
-	} else {
-		viewState.location?.let {
-			RestaurantsList(
-				restaurants = viewState.restaurants,
-				onRestaurantClick = navigateToRestaurantDetail,
-				viewModel = viewModel,
-				location = it
-			)
-	}}
+	when {
+		viewState.loading -> {
+			LoadingScreen()
+		}
+		viewState.error != null -> {
+			ErrorScreen(errorMessage = viewState.error!!)
+		}
+		else -> {
+			viewState.location?.let {
+				RestaurantsList(
+					restaurants = viewState.restaurants,
+					onRestaurantClick = navigateToRestaurantDetail,
+					viewModel = viewModel,
+				)
+			}
+		}
+	}
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun RestaurantsList(
+	modifier: Modifier = Modifier,
 	restaurants: List<Restaurant>,
 	onRestaurantClick: (restaurantId: String) -> Unit,
-	viewModel: RestaurantsListViewModel = viewModel(),
-	location: LatLng
+	viewModel: RestaurantsListViewModel = viewModel()
 ) {
-	Column(modifier = Modifier.padding(16.dp)) {
+	Column(modifier = modifier.padding(16.dp)) {
 		CustomSearchBar(
 			hint = "Restaurant...",
-			modifier = Modifier
+			modifier = modifier
 				.fillMaxWidth()
 				.padding(bottom = 8.dp)
 		) {
@@ -137,7 +144,7 @@ fun RestaurantItem(
 
 			) {
 			Text(text = restaurant.name, fontWeight = FontWeight.Bold)
-			Row() {
+			Row {
 				Image(
 					painter = painterResource(id = R.drawable.ic_star_rating),
 					contentDescription = stringResource(id = R.string.star_icon),
