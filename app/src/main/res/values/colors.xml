@@ -20,4 +20,8 @@
 	<color name="searchBarColor">#FFFFFFFF</color>
 	<color name="searchBarTextColor">#000000</color>
 
+	<color name="grantPermissions">#4BB543</color>
+
+
+
 </resources>

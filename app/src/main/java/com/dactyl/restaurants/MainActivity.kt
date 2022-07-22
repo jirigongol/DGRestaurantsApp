@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -30,8 +29,6 @@ import androidx.navigation.compose.rememberNavController
 import com.dactyl.restaurants.ui.navigation.RestaurantsBottomNavigation
 import com.dactyl.restaurants.ui.navigation.RestaurantsDestinations
 import com.dactyl.restaurants.ui.navigation.RestaurantsNavGraph
-import com.dactyl.restaurants.ui.restaurantslist.RestaurantsListViewModel
-import com.dactyl.restaurants.ui.restaurantsmap.RestaurantsMapViewModel
 import com.dactyl.restaurants.ui.theme.DactylTestAppTheme
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -55,7 +52,6 @@ class MainActivity : ComponentActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-
 		setContent {
 			val navController = rememberNavController()
 			val navBackStackEntry by navController.currentBackStackEntryAsState()

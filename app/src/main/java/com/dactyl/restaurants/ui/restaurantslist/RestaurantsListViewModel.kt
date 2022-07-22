@@ -17,6 +17,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.acos
+import kotlin.math.cos
+import kotlin.math.sin
 
 @HiltViewModel
 class RestaurantsListViewModel @Inject constructor(
@@ -26,43 +29,44 @@ class RestaurantsListViewModel @Inject constructor(
 	private val _viewState = MutableStateFlow(RestaurantsListViewState(loading = true))
 	private val _restaurants = MutableStateFlow<List<Restaurant>>(emptyList())
 
+	var permissions = mutableStateOf(false)
+	var permissionsDenied = mutableStateOf(true)
+
 	private var cachedRestaurantList = listOf<Restaurant>().sortByDistance()
 	private var isSearchStarting = true
-	var isSearching = mutableStateOf(false)
+	private var isSearching = mutableStateOf(false)
 
-	private var _userCurrentLocation = MutableStateFlow<LatLng>(LatLng(0.0, 0.0))
+	private var _userCurrentLocation = MutableStateFlow(LatLng(0.0, 0.0))
 
 	val viewState =
 		combine(_viewState, _restaurants, _userCurrentLocation) { state, restaurants, location ->
 			when {
-				restaurants.isNotEmpty() || isSearching.value -> RestaurantsListViewState(
-					restaurants = restaurants.sortByDistance(),
-					location = location
-				)
+				(restaurants.isNotEmpty()) || isSearching.value ->
+					RestaurantsListViewState(
+						restaurants = if (permissions.value) {
+							restaurants.sortByDistance()
+						} else {
+							restaurants.sortByAlphabet()
+						},location = location
+					)
 				else -> state
 			}
 		}
 
 	init {
-		Log.d("xxxx", "INIT RestaurantsListViewModel")
 		observeRestaurants()
 
 		viewModelScope.launch {
 			fetchRestaurants()
 		}
-
-		observeLocationData()
-		locationInteractor.start()
 	}
 
 	override fun onCleared() {
-		Log.d("xxxx", "onCleared LIST: ")
 		locationInteractor.stop()
 		super.onCleared()
 	}
 
 	private suspend fun fetchRestaurants() {
-		Log.e("TAG", "RestaurantsList - Start fetching data.")
 		restaurantRepository.getRestaurants().fold(
 			{ error ->
 				Log.d("TAG", "RestaurantsListLoadingError: $error")
@@ -81,8 +85,17 @@ class RestaurantsListViewModel @Inject constructor(
 	private fun observeRestaurants() {
 		viewModelScope.launch {
 			restaurantRepository.observeRestaurants().collect {
-				Log.d("TAG", "observeRestaurants: ${it.size}")
 				_restaurants.value = it
+			}
+		}
+	}
+
+	fun observeLocationData() {
+		locationInteractor.start()
+		viewModelScope.launch {
+			locationInteractor.locationData.collectLatest {
+				_userCurrentLocation.value = LatLng(it.latitude, it.longitude)
+
 			}
 		}
 	}
@@ -117,7 +130,6 @@ class RestaurantsListViewModel @Inject constructor(
 	private fun List<Restaurant>.sortByDistance(): List<Restaurant> {
 		val result = this.sortedBy {
 			distanceInKm(
-
 				_userCurrentLocation.value.latitude,
 				_userCurrentLocation.value.longitude,
 				it.location.latitude.toDouble(),
@@ -127,14 +139,29 @@ class RestaurantsListViewModel @Inject constructor(
 		return result
 	}
 
-	private fun observeLocationData() {
-		viewModelScope.launch {
-			locationInteractor.locationData.collectLatest {
-				Log.d("xxxx", "List VM location: $it")
-				_userCurrentLocation.value =  LatLng(it.latitude, it.longitude)
+	private fun List<Restaurant>.sortByAlphabet(): List<Restaurant> {
+		return sortedBy { restaurant -> restaurant.name }
+	}
 
-			}
-		}
+	private fun distanceInKm(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+		val theta = lon1 - lon2
+		var dist =
+			sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(
+				deg2rad(lat2)
+			) * cos(deg2rad(theta))
+		dist = acos(dist)
+		dist = rad2deg(dist)
+		dist *= 60 * 1.1515
+		dist *= 1.609344
+		return dist
+	}
+
+	private fun deg2rad(deg: Double): Double {
+		return deg * Math.PI / 180.0
+	}
+
+	private fun rad2deg(rad: Double): Double {
+		return rad * 180.0 / Math.PI
 	}
 }
 

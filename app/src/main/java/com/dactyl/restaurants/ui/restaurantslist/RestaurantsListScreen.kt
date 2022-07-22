@@ -1,5 +1,7 @@
 package com.dactyl.restaurants.ui.restaurantslist
 
+import android.Manifest
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
@@ -23,10 +25,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,7 +40,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.dactyl.restaurants.R
 import com.dactyl.restaurants.model.Restaurant
+import com.dactyl.restaurants.ui.restaurantslist.components.LocationPermissionsDialog
 import com.dactyl.restaurants.ui.util.CustomSearchBar
+import com.dactyl.restaurants.ui.util.extensions.openSettings
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionRequired
+import com.google.accompanist.permissions.rememberPermissionState
 import com.strv.movies.ui.error.ErrorScreen
 import com.strv.movies.ui.loading.LoadingScreen
 import kotlin.math.acos
@@ -50,10 +60,8 @@ fun RestaurantsListScreen(
 	val viewState by viewModel.viewState.collectAsState(
 		RestaurantsListViewState(
 			restaurants = emptyList(),
-			location = null
 		)
 	)
-
 	when {
 		viewState.loading -> {
 			LoadingScreen()
@@ -62,18 +70,19 @@ fun RestaurantsListScreen(
 			ErrorScreen(errorMessage = viewState.error!!)
 		}
 		else -> {
-			viewState.location?.let {
-				RestaurantsList(
-					restaurants = viewState.restaurants,
-					onRestaurantClick = navigateToRestaurantDetail,
-					viewModel = viewModel,
-				)
-			}
+			RestaurantsList(
+				restaurants = viewState.restaurants,
+				onRestaurantClick = navigateToRestaurantDetail,
+				viewModel = viewModel,
+			)
 		}
 	}
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(
+	ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
+	ExperimentalPermissionsApi::class
+)
 @Composable
 fun RestaurantsList(
 	modifier: Modifier = Modifier,
@@ -81,6 +90,45 @@ fun RestaurantsList(
 	onRestaurantClick: (restaurantId: String) -> Unit,
 	viewModel: RestaurantsListViewModel = viewModel()
 ) {
+	var openDialog by remember { mutableStateOf(true) }
+	val context = LocalContext.current
+	val permissionState =
+		rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
+
+	if (viewModel.permissionsDenied.value) {
+		if (openDialog) {
+			PermissionRequired(
+				permissionState = permissionState,
+				permissionNotGrantedContent = {
+					LocationPermissionsDialog(
+						positiveText = "GRANT PERMISSIONS",
+						negative = {
+							openDialog = false
+							viewModel.permissionsDenied.value = false
+						},
+						positive = {
+							permissionState.launchPermissionRequest()
+						}
+					)
+				},
+				permissionNotAvailableContent = {
+					LocationPermissionsDialog(
+						positiveText = "OPEN SETTINGS",
+						negative = {
+							openDialog = false
+						},
+						positive = context::openSettings
+					)
+				}) {
+//            Permissions Granted
+				Log.d("xxxx", "PERMISSIONS GRANTED ")
+
+				viewModel.permissions.value = true
+				viewModel.observeLocationData()
+			}
+		}
+	} else return
+
 	Column(modifier = modifier.padding(16.dp)) {
 		CustomSearchBar(
 			hint = "Restaurant...",
@@ -156,25 +204,4 @@ fun RestaurantItem(
 		Text(text = restaurant.cuisines)
 
 	}
-}
-
-fun distanceInKm(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-	val theta = lon1 - lon2
-	var dist =
-		sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(
-			deg2rad(lat2)
-		) * cos(deg2rad(theta))
-	dist = acos(dist)
-	dist = rad2deg(dist)
-	dist *= 60 * 1.1515
-	dist *= 1.609344
-	return dist
-}
-
-private fun deg2rad(deg: Double): Double {
-	return deg * Math.PI / 180.0
-}
-
-private fun rad2deg(rad: Double): Double {
-	return rad * 180.0 / Math.PI
 }
